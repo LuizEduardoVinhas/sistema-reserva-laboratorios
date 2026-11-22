@@ -1,0 +1,877 @@
+/* ==========================================================================
+   SISTEMA DE RESERVA DE LABORATÓRIOS - ESTILOS GLOBAIS & ARQUITETURA CSS
+   Disciplina: Maturidade em Desenvolvimento de Software (UNINASSAU)
+   Padrão: Modern CSS3 (Flexbox/Grid, Variáveis CSS, Mobile-First Responsivo)
+   Zero Dependências Externas (Puro CSS3)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. VARIÁVEIS CSS (DESIGN TOKENS)
+   -------------------------------------------------------------------------- */
+:root {
+  /* Cores Institucionais e Primárias */
+  --color-primary: #0f294a;
+  --color-primary-hover: #163a66;
+  --color-primary-active: #091a30;
+  --color-brand-tag: #5b708b;
+
+  /* Superfícies e Fundos */
+  --color-bg-body: #f4f6f9;
+  --color-bg-card: #ffffff;
+  --color-bg-panel: #f8fafc;
+  --color-border: #e2e8f0;
+  --color-border-subtle: #edf2f7;
+
+  /* Tipografia */
+  --color-text-main: #0f172a;
+  --color-text-muted: #64748b;
+  --color-text-light: #94a3b8;
+
+  /* Semântica: Sucesso */
+  --color-success-bg: #ecfdf5;
+  --color-success-text: #065f46;
+  --color-success-border: #a7f3d0;
+  --color-success-dot: #10b981;
+
+  /* Semântica: Erro / Indisponível */
+  --color-danger-bg: #fef2f2;
+  --color-danger-text: #991b1b;
+  --color-danger-border: #fecaca;
+  --color-danger-dot: #ef4444;
+
+  /* Semântica: Alerta / Restrição */
+  --color-warning-bg: #fffbeb;
+  --color-warning-text: #92400e;
+  --color-warning-border: #fde68a;
+  --color-warning-icon: #f59e0b;
+
+  /* Badges de Finalidade */
+  --badge-regular-bg: #f0f9ff;
+  --badge-regular-text: #0369a1;
+  --badge-monitoria-bg: #f5f3ff;
+  --badge-monitoria-text: #6d28d9;
+  --badge-pesquisa-bg: #f0fdfa;
+  --badge-pesquisa-text: #0f766e;
+  --badge-evento-bg: #fffbeb;
+  --badge-evento-text: #b45309;
+
+  /* Tipografia & Métricas */
+  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --border-radius-sm: 6px;
+  --border-radius-md: 10px;
+  --border-radius-lg: 16px;
+  --shadow-subtle: 0 1px 3px rgba(15, 23, 42, 0.05), 0 1px 2px rgba(15, 23, 42, 0.03);
+  --shadow-hover: 0 4px 6px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -1px rgba(15, 23, 42, 0.04);
+  --transition: all 0.2s ease-in-out;
+}
+
+/* --------------------------------------------------------------------------
+   2. RESET & BASE
+   -------------------------------------------------------------------------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--color-bg-body);
+  color: var(--color-text-main);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  padding: 1.5rem 1rem 3rem 1rem;
+}
+
+/* Container Centralizador */
+.app-container {
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+/* --------------------------------------------------------------------------
+   3. TOAST GLOBAL DE SUCESSO (RF04)
+   -------------------------------------------------------------------------- */
+.toast {
+  position: fixed;
+  top: 1.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-width: 320px;
+  max-width: 90%;
+  padding: 0.85rem 1.25rem;
+  border-radius: var(--border-radius-md);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  animation: slideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.toast--hidden {
+  display: none !important;
+}
+
+.toast--success {
+  background-color: var(--color-success-bg);
+  color: var(--color-success-text);
+  border: 1px solid var(--color-success-border);
+}
+
+.toast__content {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.toast__icon {
+  flex-shrink: 0;
+  stroke: var(--color-success-text);
+}
+
+.toast__close {
+  background: transparent;
+  border: none;
+  font-size: 1.25rem;
+  line-height: 1;
+  color: var(--color-success-text);
+  cursor: pointer;
+  padding: 0.2rem;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.toast__close:hover {
+  opacity: 1;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translate(-50%, -20px);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   4. CABEÇALHO DA APLICAÇÃO
+   -------------------------------------------------------------------------- */
+.app-header {
+  margin-bottom: 2rem;
+  padding-top: 0.5rem;
+}
+
+.app-header__tag {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--color-brand-tag);
+  margin-bottom: 0.4rem;
+  text-transform: uppercase;
+}
+
+.app-header__title {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  line-height: 1.25;
+  margin-bottom: 0.4rem;
+}
+
+.app-header__subtitle {
+  font-size: 0.975rem;
+  color: var(--color-text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   5. CARDS E SEÇÕES ESTRUTURAIS
+   -------------------------------------------------------------------------- */
+.section-card {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-lg);
+  padding: 1.5rem;
+  margin-bottom: 1.75rem;
+  box-shadow: var(--shadow-subtle);
+}
+
+.section-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.section-badge-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.badge-step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-bg-panel);
+  border: 1px solid var(--color-border);
+  color: var(--color-primary);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--border-radius-sm);
+}
+
+.section-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.section-counter, .section-instruction {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   6. SEÇÃO 01: CONSULTA DE LABORATÓRIOS (RF01)
+   -------------------------------------------------------------------------- */
+.labs-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+}
+
+.lab-card {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: var(--transition);
+}
+
+.lab-card:hover {
+  border-color: #cbd5e1;
+  box-shadow: var(--shadow-hover);
+}
+
+.lab-card--unavailable {
+  background-color: #fafbfc;
+  opacity: 0.9;
+}
+
+.lab-card__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 0.85rem;
+}
+
+.lab-card__icon-box {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--border-radius-sm);
+  background-color: var(--color-bg-panel);
+  border: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-primary);
+}
+
+.lab-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.775rem;
+  font-weight: 600;
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
+}
+
+.lab-badge--available {
+  background-color: var(--color-success-bg);
+  color: var(--color-success-text);
+  border: 1px solid var(--color-success-border);
+}
+
+.lab-badge--unavailable {
+  background-color: var(--color-danger-bg);
+  color: var(--color-danger-text);
+  border: 1px solid var(--color-danger-border);
+}
+
+.badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.lab-badge--available .badge-dot {
+  background-color: var(--color-success-dot);
+}
+
+.lab-badge--unavailable .badge-dot {
+  background-color: var(--color-danger-dot);
+}
+
+.lab-card__title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: 0.2rem;
+}
+
+.lab-card__capacity {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+  margin-bottom: 0.65rem;
+}
+
+.lab-card__status-msg {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  line-height: 1.4;
+}
+
+/* Aviso de restrição interna no Card 03 */
+.lab-card__restriction-badge {
+  margin-top: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--color-warning-bg);
+  color: var(--color-warning-text);
+  border: 1px solid var(--color-warning-border);
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--border-radius-sm);
+  font-size: 0.775rem;
+  font-weight: 500;
+}
+
+.lab-card__restriction-badge svg {
+  flex-shrink: 0;
+  stroke: var(--color-warning-text);
+}
+
+/* --------------------------------------------------------------------------
+   7. SEÇÃO 02: FORMULÁRIO DE RESERVA & RESUMO (RF02, RF03, RF04)
+   -------------------------------------------------------------------------- */
+.reservation-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+.reservation-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+}
+
+.form-row--2cols {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.form-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-main);
+}
+
+.required-mark {
+  color: #dc2626;
+  font-weight: 700;
+}
+
+.form-control {
+  width: 100%;
+  padding: 0.68rem 0.85rem;
+  font-size: 0.9375rem;
+  font-family: inherit;
+  color: var(--color-text-main);
+  background-color: var(--color-bg-card);
+  border: 1px solid #cbd5e1;
+  border-radius: var(--border-radius-sm);
+  transition: var(--transition);
+  outline: none;
+}
+
+.form-control:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(15, 41, 74, 0.12);
+}
+
+.form-control::placeholder {
+  color: var(--color-text-light);
+}
+
+.form-control.is-invalid {
+  border-color: #ef4444;
+  background-color: #fef2f2;
+}
+
+.form-control.is-invalid:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+}
+
+.select-wrapper {
+  position: relative;
+}
+
+.select-wrapper select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.85rem center;
+  padding-right: 2.5rem;
+}
+
+.field-error {
+  font-size: 0.775rem;
+  color: #dc2626;
+  min-height: 1rem;
+  line-height: 1.2;
+}
+
+/* Caixa de Alerta (Warning / Danger) */
+.alert-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border-radius: var(--border-radius-sm);
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
+.alert-box--hidden {
+  display: none !important;
+}
+
+.alert-box--warning {
+  background-color: var(--color-warning-bg);
+  border: 1px solid var(--color-warning-border);
+  color: var(--color-warning-text);
+}
+
+.alert-box--warning strong {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 0.15rem;
+}
+
+.alert-box--danger {
+  background-color: var(--color-danger-bg);
+  border: 1px solid var(--color-danger-border);
+  color: var(--color-danger-text);
+  font-weight: 500;
+}
+
+.alert-box__icon {
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+/* Botões */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  padding: 0.85rem 1.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: inherit;
+  border-radius: var(--border-radius-sm);
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn--primary {
+  background-color: var(--color-primary);
+  color: #ffffff;
+}
+
+.btn--primary:hover {
+  background-color: var(--color-primary-hover);
+  transform: translateY(-1px);
+}
+
+.btn--primary:active {
+  background-color: var(--color-primary-active);
+  transform: translateY(0);
+}
+
+.btn--full {
+  width: 100%;
+}
+
+.btn__icon {
+  transition: transform 0.2s ease;
+}
+
+.btn:hover .btn__icon {
+  transform: translateX(3px);
+}
+
+/* Painel de Pré-visualização ("SUA SOLICITAÇÃO") */
+.live-preview-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.live-preview-card {
+  background-color: var(--color-bg-panel);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  padding: 1.35rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.live-preview-card__tag {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--color-brand-tag);
+  margin-bottom: 0.4rem;
+  display: block;
+}
+
+.live-preview-card__title {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--color-primary);
+  margin-bottom: 1.15rem;
+  line-height: 1.25;
+}
+
+.preview-item {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.85rem;
+}
+
+.preview-item__label {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  margin-bottom: 0.15rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.preview-item__val {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--color-text-main);
+}
+
+/* Bloco de Validação Dinâmica da Lateral */
+.preview-status {
+  margin-top: auto;
+  padding: 0.85rem;
+  border-radius: var(--border-radius-sm);
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  border: 1px solid transparent;
+}
+
+.preview-status__header {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-bottom: 0.25rem;
+}
+
+.preview-status--neutral {
+  background-color: #ffffff;
+  border-color: var(--color-border);
+  color: var(--color-text-muted);
+}
+
+.preview-status--valid {
+  background-color: var(--color-success-bg);
+  border-color: var(--color-success-border);
+  color: var(--color-success-text);
+}
+
+.preview-status--invalid {
+  background-color: var(--color-danger-bg);
+  border-color: var(--color-danger-border);
+  color: var(--color-danger-text);
+}
+
+/* --------------------------------------------------------------------------
+   8. SEÇÃO 03: LISTAGEM DE RESERVAS (RF05)
+   -------------------------------------------------------------------------- */
+.table-responsive-wrapper {
+  display: none; /* Em mobile, exibe cards. Em desktop, vira block via media query */
+  width: 100%;
+  overflow-x: auto;
+  margin-bottom: 1rem;
+}
+
+.reservas-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.875rem;
+}
+
+.reservas-table th {
+  padding: 0.75rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.reservas-table td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--color-border-subtle);
+  vertical-align: middle;
+}
+
+.reservas-table tr:last-child td {
+  border-bottom: none;
+}
+
+.reservas-table tr:hover td {
+  background-color: #fafbfc;
+}
+
+.table-cell-main {
+  font-weight: 600;
+  color: var(--color-text-main);
+  display: block;
+}
+
+.table-cell-sub {
+  font-size: 0.775rem;
+  color: var(--color-text-muted);
+  display: block;
+  margin-top: 0.15rem;
+}
+
+/* Badges de Finalidade */
+.finalidade-badge {
+  display: inline-block;
+  font-size: 0.775rem;
+  font-weight: 600;
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
+  white-space: nowrap;
+}
+
+.finalidade-badge--aula-regular {
+  background-color: var(--badge-regular-bg);
+  color: var(--badge-regular-text);
+}
+
+.finalidade-badge--monitoria {
+  background-color: var(--badge-monitoria-bg);
+  color: var(--badge-monitoria-text);
+}
+
+.finalidade-badge--pesquisa {
+  background-color: var(--badge-pesquisa-bg);
+  color: var(--badge-pesquisa-text);
+}
+
+.finalidade-badge--evento-workshop {
+  background-color: var(--badge-evento-bg);
+  color: var(--badge-evento-text);
+}
+
+/* Cards de Reservas para Telas Menores (Mobile) */
+.reservas-mobile-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.reserva-mobile-card {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-md);
+  padding: 1rem;
+  box-shadow: var(--shadow-subtle);
+}
+
+.reserva-mobile-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.reserva-mobile-card__title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.reserva-mobile-card__prof {
+  font-size: 0.925rem;
+  font-weight: 600;
+  color: var(--color-text-main);
+}
+
+.reserva-mobile-card__mat {
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  margin-bottom: 0.75rem;
+}
+
+.reserva-mobile-card__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--color-border-subtle);
+  font-size: 0.8125rem;
+}
+
+.reserva-mobile-card__meta-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  display: block;
+}
+
+.reserva-mobile-card__meta-val {
+  font-weight: 600;
+  color: var(--color-text-main);
+}
+
+/* Estado Vazio */
+.empty-state {
+  text-align: center;
+  padding: 2.5rem 1rem;
+  background-color: var(--color-bg-panel);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--border-radius-md);
+  margin-bottom: 1rem;
+}
+
+.empty-state--hidden {
+  display: none !important;
+}
+
+.empty-state__icon {
+  stroke: var(--color-text-light);
+  margin-bottom: 0.75rem;
+}
+
+.empty-state__title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text-main);
+  margin-bottom: 0.25rem;
+}
+
+.empty-state__desc {
+  font-size: 0.825rem;
+  color: var(--color-text-muted);
+}
+
+.section-footer-note {
+  font-size: 0.785rem;
+  color: var(--color-text-light);
+  text-align: left;
+}
+
+/* --------------------------------------------------------------------------
+   9. RODAPÉ INSTITUCIONAL
+   -------------------------------------------------------------------------- */
+.app-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding-top: 1.5rem;
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  border-top: 1px solid var(--color-border);
+}
+
+.app-footer__brand {
+  font-weight: 600;
+  color: var(--color-brand-tag);
+}
+
+/* --------------------------------------------------------------------------
+   10. MEDIA QUERIES (RESPONSIVIDADE & LAYOUT DESKTOP - RNF02)
+   -------------------------------------------------------------------------- */
+/* Tablets e Telas Médias */
+@media (min-width: 640px) {
+  .labs-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .form-row--2cols {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Desktop e Notebooks */
+@media (min-width: 992px) {
+  body {
+    padding: 2.5rem 2rem 4rem 2rem;
+  }
+
+  .app-header__title {
+    font-size: 2.25rem;
+  }
+
+  /* Grid de 3 Laboratórios lado a lado */
+  .labs-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  /* Layout de Reserva em 2 Colunas (Formulário + Live Preview) */
+  .reservation-layout {
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+  }
+
+  /* Em Desktop exibe a Tabela e oculta os Cards Mobile */
+  .table-responsive-wrapper {
+    display: block;
+  }
+
+  .reservas-mobile-cards {
+    display: none;
+  }
+}

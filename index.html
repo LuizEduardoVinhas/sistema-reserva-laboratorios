@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Reserva de Laboratórios | Portal Docente</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- TOAST / BANNER DE FEEDBACK GLOBAL (RF04) -->
+  <div id="toast-sucesso" class="toast toast--success toast--hidden" role="alert" aria-live="polite">
+    <div class="toast__content">
+      <svg class="toast__icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 6L9 17l-5-5"/>
+      </svg>
+      <span id="toast-mensagem">Reserva confirmada com sucesso!</span>
+    </div>
+    <button type="button" class="toast__close" id="btn-fechar-toast" aria-label="Fechar notificação">&times;</button>
+  </div>
+
+  <div class="app-container">
+
+    <!-- CABEÇALHO INSTITUCIONAL -->
+    <header class="app-header">
+      <div class="app-header__tag">RESERVAS &bull; PORTAL DOCENTE</div>
+      <h1 class="app-header__title">Sistema de Reserva de Laboratórios</h1>
+      <p class="app-header__subtitle">Consulte os espaços e organize sua próxima atividade acadêmica.</p>
+    </header>
+
+    <main class="app-main">
+
+      <!-- ==========================================
+           SEÇÃO 01: CONSULTAR LABORATÓRIOS (RF01)
+      =========================================== -->
+      <section class="section-card" id="secao-laboratorios" aria-labelledby="titulo-secao-labs">
+        <div class="section-card__header">
+          <div class="section-badge-title">
+            <span class="badge-step">01</span>
+            <h2 id="titulo-secao-labs" class="section-title">Consultar laboratórios</h2>
+          </div>
+          <span class="section-counter" id="contador-labs">3 espaços cadastrados</span>
+        </div>
+
+        <!-- Grid de Cards de Laboratórios (Renderizado dinamicamente via JS) -->
+        <div class="labs-grid" id="labs-grid">
+          <!-- Conteúdo gerado por script.js -> renderizarLaboratorios() -->
+        </div>
+      </section>
+
+      <!-- ==========================================
+           SEÇÃO 02: REALIZAR RESERVA (RF02, RF03, RF04)
+      =========================================== -->
+      <section class="section-card" id="secao-formulario" aria-labelledby="titulo-secao-reserva">
+        <div class="section-card__header">
+          <div class="section-badge-title">
+            <span class="badge-step">02</span>
+            <h2 id="titulo-secao-reserva" class="section-title">Realizar Reserva</h2>
+          </div>
+          <span class="section-instruction">Todos os campos são obrigatórios.</span>
+        </div>
+
+        <div class="reservation-layout">
+          <!-- Formulário Principal -->
+          <form id="form-reserva" class="reservation-form" novalidate>
+
+            <div class="form-row form-row--2cols">
+              <!-- Nome do Professor -->
+              <div class="form-group">
+                <label for="prof-nome" class="form-label">Nome do Professor <span class="required-mark">*</span></label>
+                <input 
+                  type="text" 
+                  id="prof-nome" 
+                  name="nome" 
+                  class="form-control" 
+                  placeholder="Ex.: Prof. Rafael Pacheco" 
+                  required
+                >
+                <span class="field-error" id="erro-nome"></span>
+              </div>
+
+              <!-- Matrícula -->
+              <div class="form-group">
+                <label for="prof-matricula" class="form-label">Matrícula <span class="required-mark">*</span></label>
+                <input 
+                  type="text" 
+                  id="prof-matricula" 
+                  name="matricula" 
+                  class="form-control" 
+                  placeholder="Ex.: 202401587" 
+                  required
+                >
+                <span class="field-error" id="erro-matricula"></span>
+              </div>
+            </div>
+
+            <div class="form-row form-row--2cols">
+              <!-- Seleção do Laboratório -->
+              <div class="form-group">
+                <label for="select-laboratorio" class="form-label">Laboratório <span class="required-mark">*</span></label>
+                <div class="select-wrapper">
+                  <select id="select-laboratorio" name="laboratorioId" class="form-control" required>
+                    <option value="" disabled selected>Selecione um laboratório</option>
+                    <!-- Opções geradas via JS mantendo regra do Lab 02 disabled -->
+                  </select>
+                </div>
+                <span class="field-error" id="erro-laboratorio"></span>
+              </div>
+
+              <!-- Seleção da Finalidade -->
+              <div class="form-group">
+                <label for="select-finalidade" class="form-label">Finalidade <span class="required-mark">*</span></label>
+                <div class="select-wrapper">
+                  <select id="select-finalidade" name="finalidade" class="form-control" required>
+                    <option value="" disabled selected>Selecione a finalidade</option>
+                    <option value="Aula Regular">Aula Regular</option>
+                    <option value="Monitoria">Monitoria</option>
+                    <option value="Pesquisa">Pesquisa</option>
+                    <option value="Evento / Workshop">Evento / Workshop</option>
+                  </select>
+                </div>
+                <span class="field-error" id="erro-finalidade"></span>
+              </div>
+            </div>
+
+            <!-- Alerta preventivo dinâmico para Lab 03 (< 30 lugares) -->
+            <div id="alerta-capacidade-preventivo" class="alert-box alert-box--warning alert-box--hidden" role="alert">
+              <svg class="alert-box__icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/>
+                <line x1="12" y1="17" x2="12.01" y2="17"/>
+              </svg>
+              <div>
+                <strong>Restrição de capacidade</strong>
+                <p>O laboratório selecionado tem menos de 30 lugares. Para este espaço, selecione Monitoria, Pesquisa ou Evento / Workshop.</p>
+              </div>
+            </div>
+
+            <div class="form-row form-row--2cols">
+              <!-- Data da Reserva -->
+              <div class="form-group">
+                <label for="reserva-data" class="form-label">Data <span class="required-mark">*</span></label>
+                <div class="input-icon-wrapper">
+                  <input 
+                    type="date" 
+                    id="reserva-data" 
+                    name="data" 
+                    class="form-control" 
+                    required
+                  >
+                </div>
+                <span class="field-error" id="erro-data"></span>
+              </div>
+
+              <!-- Horário da Reserva -->
+              <div class="form-group">
+                <label for="select-horario" class="form-label">Horário <span class="required-mark">*</span></label>
+                <div class="select-wrapper">
+                  <select id="select-horario" name="horario" class="form-control" required>
+                    <option value="" disabled selected>Selecione um horário</option>
+                    <option value="08:00 – 10:00">08:00 – 10:00</option>
+                    <option value="10:00 – 12:00">10:00 – 12:00</option>
+                    <option value="14:00 – 16:00">14:00 – 16:00</option>
+                    <option value="16:00 – 18:00">16:00 – 18:00</option>
+                    <option value="18:00 – 20:00">18:00 – 20:00</option>
+                    <option value="20:00 – 22:00">20:00 – 22:00</option>
+                  </select>
+                </div>
+                <span class="field-error" id="erro-horario"></span>
+              </div>
+            </div>
+
+            <!-- Banner de Erro Geral de Validação (RF03 / Regra Slide 9) -->
+            <div id="alerta-erro-submissao" class="alert-box alert-box--danger alert-box--hidden" role="alert">
+              <svg class="alert-box__icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+              <div id="mensagem-erro-submissao">
+                Atenção: Laboratórios com capacidade inferior a 30 alunos não podem ser reservados para aulas regulares.
+              </div>
+            </div>
+
+            <!-- Botão de Ação -->
+            <button type="submit" id="btn-submit-reserva" class="btn btn--primary btn--full">
+              <span>Confirmar Reserva</span>
+              <svg class="btn__icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+              </svg>
+            </button>
+          </form>
+
+          <!-- Painel Lateral: Resumo em Tempo Real ("SUA SOLICITAÇÃO") -->
+          <aside class="live-preview-panel" aria-label="Resumo em tempo real da solicitação">
+            <div class="live-preview-card">
+              <span class="live-preview-card__tag">SUA SOLICITAÇÃO</span>
+              <h3 class="live-preview-card__title" id="preview-lab-nome">Nenhum laboratório</h3>
+
+              <div class="preview-item">
+                <span class="preview-item__label">Capacidade</span>
+                <span class="preview-item__val" id="preview-lab-capacidade">—</span>
+              </div>
+
+              <div class="preview-item">
+                <span class="preview-item__label">Data</span>
+                <span class="preview-item__val" id="preview-data">—</span>
+              </div>
+
+              <div class="preview-item">
+                <span class="preview-item__label">Horário</span>
+                <span class="preview-item__val" id="preview-horario">—</span>
+              </div>
+
+              <div class="preview-item">
+                <span class="preview-item__label">Finalidade</span>
+                <span class="preview-item__val" id="preview-finalidade">—</span>
+              </div>
+
+              <!-- Status Dinâmico de Validação na Lateral -->
+              <div id="preview-status-box" class="preview-status preview-status--neutral">
+                <div class="preview-status__header">
+                  <svg class="preview-status__icon" id="preview-status-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="16" x2="12" y2="12"/>
+                    <line x1="12" y1="8" x2="12.01" y2="8"/>
+                  </svg>
+                  <strong id="preview-status-titulo">Aguardando dados</strong>
+                </div>
+                <p id="preview-status-desc">Preencha o formulário para visualizar os detalhes e a validação do espaço.</p>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           SEÇÃO 03: LISTAR RESERVAS (RF05)
+      =========================================== -->
+      <section class="section-card" id="secao-reservas" aria-labelledby="titulo-secao-historico">
+        <div class="section-card__header">
+          <div class="section-badge-title">
+            <span class="badge-step">03</span>
+            <h2 id="titulo-secao-historico" class="section-title">Reservas Realizadas</h2>
+          </div>
+          <span class="section-counter" id="contador-reservas">0 reservas nesta sessão</span>
+        </div>
+
+        <!-- Tabela (Desktop) e Lista de Cards (Mobile) -->
+        <div class="table-responsive-wrapper">
+          <table class="reservas-table" id="tabela-reservas" aria-label="Tabela de reservas confirmadas">
+            <thead>
+              <tr>
+                <th scope="col">Laboratório</th>
+                <th scope="col">Professor</th>
+                <th scope="col">Data</th>
+                <th scope="col">Horário</th>
+                <th scope="col">Finalidade</th>
+              </tr>
+            </thead>
+            <tbody id="corpo-tabela-reservas">
+              <!-- Linhas geradas por script.js -> renderizarReservas() -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Visualização Mobile Alternativa em Cards -->
+        <div class="reservas-mobile-cards" id="reservas-mobile-cards" aria-label="Lista de reservas confirmadas para dispositivos móveis">
+          <!-- Cards gerados por script.js -->
+        </div>
+
+        <!-- Estado Vazio -->
+        <div id="reservas-estado-vazio" class="empty-state empty-state--hidden">
+          <svg class="empty-state__icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+            <line x1="16" y1="2" x2="16" y2="6"/>
+            <line x1="8" y1="2" x2="8" y2="6"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+          </svg>
+          <p class="empty-state__title">Nenhuma reserva registrada nesta sessão</p>
+          <p class="empty-state__desc">Utilize o formulário acima para registrar sua primeira reserva de laboratório.</p>
+        </div>
+
+        <p class="section-footer-note">As reservas acima foram realizadas nesta sessão.</p>
+      </section>
+
+    </main>
+
+    <!-- RODAPÉ INSTITUCIONAL -->
+    <footer class="app-footer">
+      <span class="app-footer__brand">Portal acadêmico</span>
+      <span class="app-footer__tagline">Gestão de laboratórios universitários</span>
+    </footer>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
